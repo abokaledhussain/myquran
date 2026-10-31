@@ -1,0 +1,1 @@
+window.RECITERS = [{"name": "عبد الباسط عبد الصمد", "folder": "AbdulSamad_64kbps_QuranExplorer.Com"}, {"name": "مشاري راشد العفاسي", "folder": "Alafasy_128kbps"}, {"name": "عبد الرحمن السديس", "folder": "Abdurrahmaan_As-Sudais_192kbps"}, {"name": "محمود خليل الحصري", "folder": "Husary_64kbps"}];

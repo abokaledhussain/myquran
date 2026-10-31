@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>برومبت إعادة البناء</title>
+<style>
+  body { font-family: system-ui, Tahoma, Arial, sans-serif; margin: 0; padding: 16px; background: #F4F9F2; color: #1B1B1B; }
+  h1 { font-size: 20px; color: #0E4F3F; margin: 8px 0 12px; }
+  p { line-height: 1.8; }
+  textarea { width: 100%; min-height: 320px; padding: 12px; font: 14px/1.7 Consolas, monospace; border: 1.5px solid #2E6B4A; border-radius: 12px; box-sizing: border-box; background: #fff; direction: rtl; }
+  button { margin-top: 12px; width: 100%; padding: 14px; font-size: 17px; font-weight: 700; color: #fff; background: #2E6B4A; border: 0; border-radius: 14px; cursor: pointer; }
+  button.done { background: #0E4F3F; }
+</style>
+</head>
+<body>
+<h1>برومبت إعادة بناء تطبيق القرآن (نسخة الويب من الأندرويد v1.47)</h1>
+<p>انسخ النص التالي والصقه في Claude لإعادة بناء المجلد نفسه بالمواصفات كاملة.</p>
+<textarea id="prompt" readonly>
+أعد بناء نسخة ويب كاملة من تطبيق "القرآن الكريم" بالمواصفات التالية، واعتمد الأندرويد (MyQuran v1.47) مرجعًا لكل الميزات والتفاصيل.
+
+البنية:
+quran.html            الصفحة الرئيسية، تعمل بفتحها مباشرة من أي متصفح (file://) وداخل WebView
+css/fonts.css         تعريفات خطوط QCF4 لكل صفحة + QBSML + UthmanicHafs
+css/app.css           التنسيق والثيمات (5 ثيمات بمتغيرات CSS)
+js/lib/*.js           المكتبات: التخزين، الأدوات، حجم الخط، التجويد، بيانات المصحف، تخطيط الأسطر، الصوت، التفسير، العلامات، الختمة
+js/ui/*.js            الواجهة: النوافذ، المصحف، إجراءات الآية، نوافذ الفهرس، الفهرس، الإعدادات، التشغيل
+data/qcf_pages.js     بيانات 604 صفحة (window.QCF_DATA) من assets/qcf_pages.json
+data/surahs.js, data/reciters.js, data/tajweed_lessons.js
+data/tafsir/<المجلد>/<رقم السورة>.js   كل تفسير مضغوط gzip ثم base64 داخل TAFSIR_LOAD(...)، ويُفك في المتصفح بـ DecompressionStream
+fonts/                خطوط QCF4_Hafs_NN_W و QCF4_QBSML و UthmanicHafs
+
+القواعد:
+1. لا يُستعمل fetch لأي ملف، فكل البيانات عبر <script>، حتى يعمل الملف من file://.
+2. ترتيب الكلمات في السطر: الكلمة الأولى أقصى اليمين (RTL)، ويُكتب ذلك بوضوح في العرض.
+3. حجم الخط: 1% إلى 200%، و50% = ملء عرض الشاشة. الصيغة: p<=50 ? 0.3+0.7*(p-1)/49 : 1+3*(p-50)/150.
+4. تخطيط الأسطر كما في QuranPageView.kt: قياس بحجم 100 ثم fitPx، واللف عند الامتلاء، والتصغير إن تجاوز السطر بأقل من 5%، والتوزيع بين الكلمات بحد 0.12em.
+5. التجويد: الغنة (أخضر #1E8C3A)، القلقلة (أزرق #1565C0)، المدود (برتقالي #E65100 وأحمر #C62828 للقوي). الوضع 0 إيقاف، 1 غنة وقلقلة، 2 كامل.
+6. الضغط على آية: تظليل وتحديد. الضغط المطوّل 500ms: إجراءات الآية (تفسير، استماع، حفظ علامة). الضغط على أي مكان: يُظهر شريط التمرير ويُخفيه.
+7. التلاوة: everyayah.com مع القارئ المختار، والانتقال للآية والسورة التالية تلقائيًا، والآية الجارية بالأحمر.
+8. التمرير التلقائي: 10 + (السرعة-1)*8 بكسل في الثانية، من 1 إلى 10، ويتوقف عند آخر المصحف.
+9. الفهرس بثلاثة تبويبات: سورة (مع دروس التجويد)، وجزء (مع خطة الختمة 30 يومًا)، واذهب إلى صفحة. وزر العلامات.
+10. العلامات والنسخ الاحتياطي بصيغة {app:"myquran", version:1, bookmarks:[...]} متوافقة مع الأندرويد.
+11. الإعدادات: الحجم، التجويد، القارئ، الثيم. وتُحفظ في localStorage بمفاتيح myquran.*
+12. الحوارات: إطار كريمي بحواف مستديرة وزخرفة ۞، بالعربية RTL.
+13. الحفاظ على الموضع: آخر صفحة وإزاحتها، وتعويض القفز عند تغيير الارتفاع.
+14. الاختبار: افتح الملف من file:// في Chromium، وتحقق من الصفحات والفهرس والتفسير والتجويد والتمرير.
+</textarea>
+<button id="copy" type="button">نسخ البرومبت</button>
+<script>
+  document.getElementById('copy').addEventListener('click', function () {
+    var ta = document.getElementById('prompt');
+    var btn = this;
+    var done = function () { btn.textContent = 'تم النسخ ✓'; btn.classList.add('done'); };
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(ta.value).then(done, function () { ta.select(); document.execCommand('copy'); done(); });
+    } else {
+      ta.select(); document.execCommand('copy'); done();
+    }
+  });
+</script>
+</body>
+</html>
