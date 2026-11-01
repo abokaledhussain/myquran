@@ -3,6 +3,7 @@
   var reader = document.getElementById('reader');
   var pagesEl = document.getElementById('pages');
   var titleEl = document.getElementById('title');
+  var juzEl = document.getElementById('juz');
   var scrollBar = document.getElementById('scrollbar');
   var scrollPlay = document.getElementById('scroll-play');
   var scrollSpeedLabel = document.getElementById('scroll-speed');
@@ -178,6 +179,7 @@
     state.visible = n;
     titleEl.dataset.page = String(n);
     titleEl.textContent = 'صفحة ' + Util.digits(n) + '  ·  سورة ' + SURAH_NAMES[QuranData.pages[n].surah - 1];
+    juzEl.textContent = 'الجزء ' + Util.digits(QuranData.pages[n].juz);
     saveSoon();
   }
 

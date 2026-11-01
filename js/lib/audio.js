@@ -1,6 +1,6 @@
 /* التلاوة آية بآية من everyayah.com، مع الانتقال تلقائيًا للآية والسورة التالية، كما في AyahPlayer.kt */
 (function () {
-  var DEFAULT_RECITER = 'AbdulSamad_64kbps_QuranExplorer.Com';
+  var DEFAULT_RECITER = 'Husary_64kbps';
   var el = new Audio();
   el.preload = 'auto';
   var state = { surah: -1, ayah: -1, error: null };
