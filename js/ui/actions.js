@@ -38,9 +38,9 @@
     ta.remove();
   }
 
-  function shareText(text) {
+  function shareText(text, title) {
     if (navigator.share) {
-      navigator.share({ title: 'تفسير الآية', text: text }).catch(function () { /* ألغى المستخدم */ });
+      navigator.share({ title: title || 'تفسير الآية', text: text }).catch(function () { /* ألغى المستخدم */ });
     } else {
       copyText(text);
     }
@@ -61,16 +61,24 @@
     body.appendChild(Util.el('p', 'modal-label', 'اختر التفسير'));
     body.appendChild(select);
 
+    /* حفظ العلامة، والقراءة، ومشاركة الآية وحدها بدون التفسير، في صف واحد */
     var row = Util.el('div', 'modal-row');
-    var listen = Util.el('button', 'tile');
-    listen.type = 'button';
-    listen.innerHTML = '<span class="tile-ic">🔊</span><span>القراءة من الآية</span>';
     var mark = Util.el('button', 'tile');
     mark.type = 'button';
     mark.innerHTML = '<span class="tile-ic">🏷</span><span>حفظ علامة</span>';
-    row.appendChild(listen);
+    var listen = Util.el('button', 'tile');
+    listen.type = 'button';
+    listen.innerHTML = '<span class="tile-ic">🔊</span><span>قراءة</span>';
+    var share = Util.el('button', 'tile');
+    share.type = 'button';
+    share.innerHTML = '<span class="tile-ic">📤</span><span>مشاركة</span>';
     row.appendChild(mark);
+    row.appendChild(listen);
+    row.appendChild(share);
     body.appendChild(row);
+    share.addEventListener('click', function () {
+      shareText(ayahPlainText(s, a, page) + '\n' + ref, 'مشاركة الآية');
+    });
 
     var dlg = Dialogs.open({
       title: 'تفسير الآية',

@@ -2,6 +2,7 @@
 (function () {
   document.getElementById('open-index').addEventListener('click', function () { Index.open(); });
   document.getElementById('open-settings').addEventListener('click', function () { Settings.open(); });
+  document.getElementById('open-search').addEventListener('click', function () { SearchDialog.open(); });
 
   /* ملء الشاشة: يعمل عبر Fullscreen API، ويُخفى الزر إن كان المتصفح أو WebView لا يدعمه */
   var fsButton = document.getElementById('toggle-fullscreen');

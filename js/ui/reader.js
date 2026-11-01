@@ -16,6 +16,7 @@
   var DEFAULT_SPEED = 3;
   var LONG_PRESS_MS = 500;
   var PLAYING_COLOR = '#C62828';
+  var SEARCH_RED = '#D32F2F';
 
   var sections = {};
   var rendered = {};     /* رقم الصفحة -> مفتاح التخطيط الذي رُسمت به */
@@ -112,7 +113,10 @@
         span.style.fontFamily = '"' + QuranData.familyOf(t.font) + '"';
         span.style.fontSize = size + 'px';
         span.style.lineHeight = (result.size * 1.5) + 'px';
-        span.dataset.base = baseColorOf(t);
+        /* كلمات نتيجة البحث تُلوَّن بالأحمر بدون تظليل، كما في الأندرويد */
+        var hit = t.type === 'w' && Search.wordHit(t.text);
+        span.dataset.base = hit ? SEARCH_RED : baseColorOf(t);
+        if (hit) span.dataset.hit = '1';
         span.style.color = span.dataset.base;
         if (t.type === 'w' || t.type === 'e') {
           span.dataset.s = t.surah;
@@ -178,8 +182,12 @@
     if (n === state.visible && titleEl.dataset.page === String(n)) return;
     state.visible = n;
     titleEl.dataset.page = String(n);
-    titleEl.textContent = 'صفحة ' + Util.digits(n) + '  ·  سورة ' + SURAH_NAMES[QuranData.pages[n].surah - 1];
-    juzEl.textContent = 'الجزء ' + Util.digits(QuranData.pages[n].juz);
+    /* على الشاشات الضيقة نختصر النص حتى يبقى اسم السورة ظاهرًا كاملًا، كما في الأندرويد */
+    var narrow = Math.min(window.innerWidth, window.innerHeight) < 600;
+    titleEl.textContent = narrow
+      ? 'سورة ' + SURAH_NAMES[QuranData.pages[n].surah - 1]
+      : 'صفحة ' + Util.digits(n) + '  ·  سورة ' + SURAH_NAMES[QuranData.pages[n].surah - 1];
+    juzEl.textContent = (narrow ? 'جزء ' : 'الجزء ') + Util.digits(QuranData.pages[n].juz);
     saveSoon();
   }
 
@@ -335,6 +343,29 @@
     scrollPlay.textContent = '▶';
   }
 
+  /* الانتقال إلى ظهور الكلمة المحدد داخل الصفحة (أو أول الآية إن لم يكن بحث كلمات)، ليظهر في أعلى الشاشة */
+  function scrollToWord(n, s, a, occ, attempt) {
+    attempt = attempt || 0;
+    renderPage(n);
+    var toks = sections[n].querySelectorAll('.tok[data-a]');
+    var hasQuery = Search.getWordQuery() !== null;
+    var target = null, seen = 0;
+    for (var i = 0; i < toks.length; i++) {
+      var t = toks[i];
+      if (+t.dataset.s !== s || +t.dataset.a !== a) continue;
+      if (!hasQuery) { target = t; break; }
+      if (t.dataset.hit !== '1') continue;
+      if (seen === occ) { target = t; break; }
+      seen++;
+    }
+    if (!target) {
+      if (attempt < 12) setTimeout(function () { scrollToWord(n, s, a, occ, attempt + 1); }, 40);
+      return;
+    }
+    var rt = reader.getBoundingClientRect().top;
+    reader.scrollTop += target.getBoundingClientRect().top - rt - 100;
+  }
+
   /* ---------- الواجهة العامة ---------- */
   var Reader = {
     init: function (pal) {
@@ -379,6 +410,7 @@
     },
 
     jumpTo: jumpTo,
+    scrollToWord: scrollToWord,
     currentPage: function () { return state.visible; },
     updateAudio: updateAudio,
     onLongPress: function () {}

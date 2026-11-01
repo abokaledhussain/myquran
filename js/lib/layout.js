@@ -94,7 +94,9 @@
         rows.push({ tokens: tokens, widths: widths, scale: 1, wrapped: false });
         return;
       }
-      if (natural <= avail * (1 + FIT_TOLERANCE)) {
+      /* الترويسة والبسملة رمز واحد لا يُلفّ، فنصغّر السطر كله ليبقى داخل الشاشة */
+      var hasHeader = tokens.some(function (t) { return t.type === 'h'; });
+      if (hasHeader || natural <= avail * (1 + FIT_TOLERANCE)) {
         rows.push({ tokens: tokens, widths: widths, scale: avail / natural, wrapped: true });
         return;
       }

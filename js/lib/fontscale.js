@@ -2,8 +2,13 @@
 (function () {
   var MIN = 1, MAX = 200, DEFAULT = 50;
 
+  /* الهاتف يبدأ من 40% كما في الأندرويد، والشاشات الكبيرة من 50% */
+  function defaultPercent() {
+    return Math.min(window.innerWidth, window.innerHeight) < 600 ? 40 : DEFAULT;
+  }
+
   function percent() {
-    return Util.clamp(Store.get('fontPercent', DEFAULT), MIN, MAX);
+    return Util.clamp(Store.get('fontPercent', defaultPercent()), MIN, MAX);
   }
 
   function scaleFor(p) {

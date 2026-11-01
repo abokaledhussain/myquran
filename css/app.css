@@ -217,6 +217,44 @@ button, select, input { font: inherit; }
 }
 .toast.show { opacity: 1; transform: translate(-50%, 0); }
 
+/* ---------- البحث في المصحف ---------- */
+.search-panel {
+  width: min(92vw, 480px); max-height: 82vh; display: flex; flex-direction: column;
+  background: var(--page); border: 1.5px solid var(--gold); border-radius: 24px;
+  overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,.3);
+}
+.search-head-i {
+  flex: 0 0 56px; height: 56px; display: flex; align-items: center; justify-content: center;
+  background-color: var(--bar); border-bottom: 1px solid var(--gold);
+}
+.search-title { margin: 0; color: #fff; font-size: 18px; font-weight: 700; text-shadow: 0 1px 2px rgba(0,0,0,.25); }
+.search-body { padding: 14px 14px 12px; display: flex; flex-direction: column; min-height: 0; flex: 1; }
+.search-field {
+  display: flex; align-items: center; gap: 8px; height: 52px; padding: 0 14px;
+  border: 1.5px solid var(--gold); border-radius: 28px; background: var(--screen);
+}
+.search-field:focus-within { border: 2px solid var(--bar); }
+.search-ic { width: 22px; height: 22px; flex: 0 0 22px; color: var(--bar); }
+.search-field input {
+  flex: 1; min-width: 0; border: 0; outline: 0; background: transparent;
+  color: var(--ink); font-size: 17px; direction: rtl;
+}
+.search-status { text-align: center; color: var(--muted); font-size: 14px; padding: 8px 0 4px; min-height: 26px; }
+.search-list { flex: 1; min-height: 120px; max-height: 52vh; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; padding: 4px 2px; }
+.search-item {
+  display: block; width: 100%; direction: rtl; text-align: right; padding: 10px 14px;
+  background: var(--page); border: 1.5px solid var(--gold); border-radius: 16px;
+  color: var(--ink); cursor: pointer;
+}
+.search-item:active { background: rgba(201,168,76,.2); }
+.search-item-title { font-size: 17px; font-weight: 700; line-height: 1.8; }
+.search-item-sub { font-size: 13px; color: var(--muted); margin-top: 2px; }
+.search-hit { color: #D32F2F; font-weight: 700; }
+.search-field input::-webkit-search-cancel-button { -webkit-appearance: none; appearance: none; }
+
+/* صف الإجراءات في نافذة التفسير: ثلاثة أزرار تتسع للهاتف */
+.modal-row .tile { padding: 12px 4px; font-size: 14px; min-width: 0; }
+
 @media (max-width: 480px) {
   .ln { padding: 0 4px; }
   .modal-panel { padding: 16px 12px 12px; }
