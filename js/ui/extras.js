@@ -119,39 +119,5 @@
     setTimeout(function () { input.focus(); }, 50);
   }
 
-  function tajweedDialog(onGo) {
-    var lessons = window.TAJWEED_LESSONS || [];
-    var list = Util.el('div', 'lesson-list');
-    lessons.forEach(function (lesson) {
-      var b = Util.el('button', 'tile wide', lesson.title);
-      b.type = 'button';
-      b.addEventListener('click', function () { lessonDialog(lesson, onGo); });
-      list.appendChild(b);
-    });
-    Dialogs.open({ title: 'دروس التجويد', body: list, actions: [{ label: 'إغلاق', primary: true }] });
-  }
-
-  function lessonDialog(lesson, onGo) {
-    Dialogs.open({
-      title: lesson.title,
-      body: Util.el('p', 'modal-text', lesson.rule),
-      actions: [
-        { label: 'عرض الأمثلة', primary: true, onClick: function (close) { close(); examplesDialog(lesson, onGo); } },
-        { label: 'إغلاق' }
-      ]
-    });
-  }
-
-  function examplesDialog(lesson, onGo) {
-    var list = Util.el('div', 'lesson-list');
-    lesson.examples.forEach(function (ex) {
-      var b = Util.el('button', 'tile wide', ex.word + '  ·  ص ' + Util.digits(ex.page));
-      b.type = 'button';
-      b.addEventListener('click', function () { onGo(ex.page); });
-      list.appendChild(b);
-    });
-    Dialogs.open({ title: 'أمثلة: ' + lesson.title, body: list, actions: [{ label: 'إغلاق', primary: true }] });
-  }
-
-  window.Extras = { bookmarksDialog: bookmarksDialog, gotoDialog: gotoDialog, tajweedDialog: tajweedDialog };
+  window.Extras = { bookmarksDialog: bookmarksDialog, gotoDialog: gotoDialog };
 })();

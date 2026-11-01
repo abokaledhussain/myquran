@@ -1,4 +1,4 @@
-/* شاشة الفهرس: تبويب السور، وتبويب الأجزاء مع خطة الختمة، وتبويب الانتقال إلى صفحة */
+/* شاشة الفهرس: تبويب السور، وتبويب الأجزاء، وتبويب الانتقال إلى صفحة */
 (function () {
   var overlay = document.getElementById('index-screen');
   var list = document.getElementById('index-list');
@@ -61,11 +61,6 @@
   }
 
   function showSurahs() {
-    var tj = card(false, function () { Extras.tajweedDialog(openPage); });
-    tj.appendChild(medal('ت'));
-    tj.appendChild(textBlock('دروس التجويد', 'الغنة والقلقلة والمد مع أمثلة'));
-    list.appendChild(tj);
-
     var page = Reader.currentPage();
     var currentSurah = QuranData.pages[page].surah;
     for (var s = 1; s <= 114; s++) {
@@ -76,7 +71,7 @@
         });
         c.appendChild(medal(Util.digits(surah)));
         c.appendChild(textBlock(SURAH_NAMES[surah - 1],
-          Util.digits(QuranData.ayahCount(surah)) + ' آية · ' + (window.SURAH_PLACES[String(surah)] || ''),
+          Util.digits(QuranData.ayahCount(surah)) + ' آية',
           { quran: true }));
         if (start) c.appendChild(pill('ص ' + Util.digits(start)));
         list.appendChild(c);
@@ -85,7 +80,6 @@
   }
 
   function showJuz() {
-    addKhatmaCards();
     for (var j = 1; j <= 30; j++) {
       (function (juz) {
         var page = QuranData.juzStartPage(juz);
@@ -97,58 +91,6 @@
         list.appendChild(c);
       })(j);
     }
-  }
-
-  function addKhatmaCards() {
-    if (!Khatma.isActive()) {
-      var start = card(false, function () { startPicker(); });
-      start.appendChild(medal(Util.digits(Khatma.DAYS)));
-      start.appendChild(textBlock('خطة الختمة', 'ابدأ من أي جزء، ثم يتتابع الترتيب'));
-      start.appendChild(pill('ابدأ'));
-      list.appendChild(start);
-      return;
-    }
-    var day = Khatma.currentDay();
-    var done = Khatma.isDone(day);
-    var juz = Khatma.juzOf(day);
-    var juzPage = QuranData.juzStartPage(juz) || 1;
-    var today = card(!done, function () { openPage(juzPage); });
-    today.appendChild(medal(Util.digits(day)));
-    today.appendChild(textBlock('اليوم ' + Util.digits(day) + ' · الجزء ' + Util.digits(juz), 'اضغط لفتح الجزء'));
-    var toggle = pill(done ? '✓ تم' : '○ لم يُتم');
-    toggle.addEventListener('click', function (e) {
-      e.stopPropagation();
-      Khatma.setDone(day, !done);
-      show('juz');
-    });
-    today.appendChild(toggle);
-    list.appendChild(today);
-
-    var reset = card(false, function () {
-      Dialogs.confirm('إعادة الخطة', 'سيُمسح تقدم الختمة الحالية.', 'إعادة', function () {
-        Khatma.reset();
-        show('juz');
-      });
-    });
-    reset.appendChild(textBlock('إعادة الخطة', 'تبدأ الختمة من جديد من اليوم'));
-    list.appendChild(reset);
-  }
-
-  function startPicker() {
-    var box = Util.el('div', 'lesson-list');
-    for (var j = 1; j <= Khatma.DAYS; j++) {
-      (function (juz) {
-        var b = Util.el('button', 'tile wide', 'الجزء ' + Util.digits(juz));
-        b.type = 'button';
-        b.addEventListener('click', function () {
-          dlg.close();
-          Khatma.start(juz);
-          show('juz');
-        });
-        box.appendChild(b);
-      })(j);
-    }
-    var dlg = Dialogs.open({ title: 'ابدأ الختمة من الجزء', body: box, actions: [{ label: 'إلغاء' }] });
   }
 
   document.getElementById('index-back').addEventListener('click', close);

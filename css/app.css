@@ -191,9 +191,7 @@ button, select, input { font: inherit; }
   flex: 1; padding: 12px 8px; border-radius: 14px; border: 1.5px solid var(--green);
   background: #fff; color: var(--green-dark); font-weight: 700; cursor: pointer;
 }
-.tile.wide { flex-direction: row; justify-content: flex-start; width: 100%; margin-bottom: 8px; }
 .tile-ic { font-size: 24px; }
-.lesson-list { display: flex; flex-direction: column; }
 .tafsir-ayah {
   font-family: "UthmanicHafs", serif; font-size: 22px; color: #1E8C3A;
   text-align: center; line-height: 1.9; padding: 8px 4px; border-bottom: 1px dashed var(--gold);
